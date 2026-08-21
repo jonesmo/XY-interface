@@ -1,13 +1,20 @@
 :root {
   --orange: rgb(255, 153, 0);
+  --dark-orange: rgb(132, 79, 0);
   --yellow: rgb(254, 246, 1);
+  --dark-yellow: rgb(130, 126, 3);
   --lime: rgb(138, 250, 0);
   --green: rgb(6, 177, 0);
   --red: rgb(255, 6, 6);
+  --dark-red: rgb(135, 2, 2);
   --magenta: rgb(255, 44, 223);
-  --blue: rgb(20, 91, 245);
-  --purple: rgb(139, 9, 215);
+  --dark-magenta: rgb(148, 25, 130);
+  --blue: rgb(71, 127, 248);
+  --dark-blue: rgb(10, 48, 129);
+  --purple: rgb(178, 48, 253);
+  --dark-purple: rgb(81, 31, 110);
   --cyan: rgb(0, 229, 254);
+  --dark-cyan: rgb(0, 111, 123);
   --white: rgb(255, 255, 255);
   --black: rgb(0, 0, 0);
 
