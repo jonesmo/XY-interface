@@ -2,16 +2,34 @@
 <html lang="en">
     <head>
         <meta charset="utf-8" />
-        <title></title>
+        <title>One Audio Dot</title>
         <meta name="description" 
-        content="One dot that makes a sound when clicked and that can be moved around an X-Y plane"
+        content="One dot that makes a sound when clicked and that can be moved around in an X-Y plane"
         />
         <meta name="viewport" 
         content="width=device-width, initial-scale=1, shrink-to-fit=no"
         />
         <link rel="stylesheet" type="text/css" href="onedot_style.css"/>
+
+        <script src="interaction.js" defer></script>
     </head>
     <body>
+        <h1>One Audio Dot</h1>
 
+        <p>Please use over-ear headphones to complete the experiment.</p>
+
+        <div>
+            <section class="smallCircle">
+                <audio src="boring_song.mp3" crossorigin="anonymous"></audio>
+
+                <button
+                    data-playing="false";
+                    class="one-dot";
+                    role="switch";
+                    aria-checked="false";
+                >
+                </button>
+            </section>
+        </div>
     </body>
 </html>
