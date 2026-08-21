@@ -1,3 +1,4 @@
+// one audio button
 const button = document.querySelector("button");
 
 console.clear();
@@ -55,3 +56,11 @@ function init () {
 
     track.connect(audioContext.destination);
 }
+
+// X-Y plane
+const plane = document.getElementById("xy-plane");
+const planeContext = plane.getContext("2d");
+
+// draw a rectangle inside the canvas
+// planeContext.rect(10, 10, 300, 300);
+// planeContext.stroke();

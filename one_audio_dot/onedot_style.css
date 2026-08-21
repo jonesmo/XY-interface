@@ -62,3 +62,13 @@ p {
 .one-dot[aria-checked="true"]{
   background-color: var(--green);
 }
+
+#xy-plane {
+  border: 2px solid var(--black);
+}
+
+.workspace {
+  display: flex;
+  justify-content: center;
+  padding: 40px 0;
+}
