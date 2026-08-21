@@ -26,6 +26,7 @@ oneDot.addEventListener(
             oneDot.dataset.playing = "true";
         } else if (oneDot.dataset.playing === "true") {
             audioElement.pause();
+            audioElement.currentTime = 0; // restart audio when clicked again
             oneDot.dataset.playing = "false";
         }
 
