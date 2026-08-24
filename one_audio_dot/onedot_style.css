@@ -58,22 +58,31 @@ p {
 }
 
 .one-dot {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  width: 40px;
+  height: 40px;
   background-color: var(--lime);
   border: none;
   margin: 0 auto;
   display: block;
   padding: 10px;
+  transition-property: background-color;
   transition-duration: 0.2s;
   border-radius: 50%;
+  cursor: grab;
 }
 
 .one-dot:hover{
   background-color: var(--green);
-  color: var(--white);
 }
 
 .one-dot[aria-checked="true"]{
   background-color: var(--green);
+}
+
+.one-dot:dragging{
+  cursor: grabbing;
 }
 
 .workspace {
@@ -83,6 +92,7 @@ p {
   padding: 40px 0;
   overflow: hidden;
   box-sizing: border-box;
+  position: relative;
 }
 
 #xy-plane {
