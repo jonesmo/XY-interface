@@ -62,7 +62,7 @@ p {
   transform: translate(-50%, -50%);
   width: 30px;
   height: 30px;
-  background-color: var(--lime);
+  background-color: var(--dot-color);
   border: none;
   margin: 0 auto;
   display: block;
@@ -74,11 +74,11 @@ p {
 }
 
 .one-dot:hover{
-  background-color: var(--green);
+  background-color: var(--dot-active-color);
 }
 
 .one-dot[aria-checked="true"]{
-  background-color: var(--green);
+  background-color: var(--dot-active-color);
 }
 
 .one-dot:dragging{

@@ -24,6 +24,8 @@ export function createDot(container, dotData) {
   button.dataset.playing = "false";
   button.setAttribute("role", "switch");
   button.setAttribute("aria-checked", "false");
+  button.style.setProperty("--dot-color", dotData.backgroundColor);
+  button.style.setProperty("--dot-active-color", dotData.highlightedColor);
 
   const audio = document.createElement("audio");
   audio.src = dotData.audioSrc;

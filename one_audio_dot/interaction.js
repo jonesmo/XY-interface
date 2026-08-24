@@ -12,6 +12,8 @@ const dots = dotDefs.map((def) => ({
   audioSrc: def.audioSrc,
   x: def.leftOffsetPx / rect.width,
   y: def.yFraction,
+  backgroundColor: def.backgroundColor,
+  highlightedColor: def.highlightedColor,
 }));
 
 // generate dots
