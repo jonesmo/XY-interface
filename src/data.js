@@ -16,4 +16,11 @@ export const dotDefs = [
         backgroundColor: "var(--orange)", 
         highlightedColor: "var(--dark-orange)",
     },
+    {
+        id: "dot3", 
+        audioSrc: "./audio/saw_scale.wav", 
+        leftOffsetPx: leftOffset, yFraction: 3 / numDots, 
+        backgroundColor: "var(--yellow)", 
+        highlightedColor: "var(--dark-yellow)",
+    },
 ];
