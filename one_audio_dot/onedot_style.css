@@ -27,6 +27,18 @@
   --dotRadius: 100px;
 }
 
+html, body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;  /* no scrollbars */
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
 audio {
   grid-area: smallCircle;
 }
@@ -52,6 +64,7 @@ p {
   display: block;
   padding: 10px;
   transition-duration: 0.2s;
+  border-radius: 50%;
 }
 
 .one-dot:hover{
@@ -63,12 +76,18 @@ p {
   background-color: var(--green);
 }
 
-#xy-plane {
-  border: 2px solid var(--black);
-}
-
 .workspace {
   display: flex;
+  flex: 1 1 0%;
   justify-content: center;
   padding: 40px 0;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+#xy-plane {
+  border: 2px solid var(--black);
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
 }

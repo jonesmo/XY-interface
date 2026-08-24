@@ -11,7 +11,7 @@
         />
         <link rel="stylesheet" type="text/css" href="onedot_style.css"/>
 
-        <script src="interaction.js" defer></script>
+        <script src="interaction.js" type="module" defer></script>
     </head>
     <body>
         <h1>One Audio Dot</h1>
@@ -23,17 +23,17 @@
                 <audio src="boring_song.mp3" crossorigin="anonymous"></audio>
 
                 <button
-                    data-playing="false";
-                    class="one-dot";
-                    role="switch";
-                    aria-checked="false";
+                    data-playing="false"
+                    class="one-dot"
+                    role="switch"
+                    aria-checked="false"
                 >
                 </button>
             </section>
         </div>
 
         <div class="workspace">
-            <canvas id="xy-plane" width="400" height="400">
+            <canvas id="xy-plane">
                 Sorry, your browser does not support canvas.
             </canvas>
         </div>

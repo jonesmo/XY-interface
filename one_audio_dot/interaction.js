@@ -1,12 +1,10 @@
-// one audio button
-const button = document.querySelector("button");
+import { initAudioContext, resizeCanvas } from "./utils.js";
 
 console.clear();
 
 let audioContext;
-const audioElement = document.querySelector("audio");
 let track;
-
+const audioElement = document.querySelector("audio");
 const oneDot = document.querySelector(".one-dot");
 
 // play and pause audio
@@ -14,7 +12,7 @@ oneDot.addEventListener(
     "click",
     () => {
         if (!audioContext) {
-            init();
+            ({ track, audioContext } = initAudioContext(audioElement));
         }
 
         // check if audio context is suspended b/c no autoplay
@@ -48,19 +46,10 @@ audioElement.addEventListener(
     false
 );
 
-function init () {
-    audioContext = new AudioContext();
-    track = new MediaElementAudioSourceNode(audioContext, {
-        mediaElement: audioElement,
-    });
-
-    track.connect(audioContext.destination);
-}
-
 // X-Y plane
 const plane = document.getElementById("xy-plane");
 const planeContext = plane.getContext("2d");
 
-// draw a rectangle inside the canvas
-// planeContext.rect(10, 10, 300, 300);
-// planeContext.stroke();
+// resize everything with window resize
+const ro = new ResizeObserver(resizeCanvas);
+ro.observe(document.querySelector('.workspace'));
