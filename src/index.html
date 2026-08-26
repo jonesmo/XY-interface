@@ -4,25 +4,31 @@
         <meta charset="utf-8" />
         <title>Two Audio Dots</title>
         <meta name="description" 
-        content="Two dots that makes different sounds when clicked and that can be moved around in an X-Y plane"
+        content="Dots that make different sounds when clicked and that can be moved around in an X-Y plane"
         />
         <meta name="viewport" 
         content="width=device-width, initial-scale=1, shrink-to-fit=no"
         />
-        <link rel="stylesheet" type="text/css" href="onedot_style.css"/>
+        <link rel="stylesheet" type="text/css" href="style.css"/>
 
         <script src="interaction.js" type="module" defer></script>
         <link rel="icon" type="image/png" href="./images/favicon.png"/>
     </head>
     <body>
-        <h1>Two Audio Dots</h1>
+        <h1>Audio Dots</h1>
 
-        <p>Please use over-ear headphones to complete the experiment.</p>
+        <div id="experimentText">
+        <p>Please use over-ear headphones to complete the experiment. When you have completed the experiment, please press Finish.</p>
+        </div>
 
         <div class="workspace">
             <canvas id="xy-plane">
                 Sorry, your browser does not support canvas.
             </canvas>
         </div>
+
+        <button id="finish" type="button">
+            Finish
+        </button>
     </body>
 </html>
