@@ -17,6 +17,7 @@ function initAudioContext (audioElement) {
     return { track, audioContext };
 }
 
+// dots
 export function createDot(container, dotData) {
   const button = document.createElement("button");
   button.className = "one-dot";
@@ -136,4 +137,25 @@ export function attachClickHandler(dotData) {
       togglePlay(dotData);
     }
   });
+}
+
+// log data to server
+export async function logData(runId, dotData, endpoint) {
+  const payload = {
+    runId,
+    timestamp: new Date().toISOString(),
+    dotData
+  };
+
+  const response = await fetch(endpoint, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  });
+
+  if (!response.ok) {
+    throw new Error(`Server responded with status ${response.status}`);
+  }
+
+  return response.json();
 }

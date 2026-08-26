@@ -1,0 +1,21 @@
+{
+  "name": "xy-interface",
+  "version": "1.0.0",
+  "description": "An interactive web app for psychoacoustics experiments. Sounds are represented with clickable, draggable colored dots that can be placed into an X-Y plane to indicate similarity.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jonesmo/XY-interface.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/jonesmo/XY-interface/issues"
+  },
+  "homepage": "https://github.com/jonesmo/XY-interface#readme"
+}
