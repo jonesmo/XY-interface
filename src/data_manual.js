@@ -1,5 +1,5 @@
 const leftOffset = 75;
-const numDots = 3;
+const numDots = 8;
 
 export const dotDefs = [
     { 
@@ -12,15 +12,15 @@ export const dotDefs = [
     { 
         id: "dot2", 
         audioSrc: "./audio/rainbow.wav", 
-        leftOffsetPx: leftOffset, yFraction: 2 / numDots, 
+        leftOffsetPx: leftOffset, yFraction: 2 / numDots,
         backgroundColor: "var(--orange)", 
         highlightedColor: "var(--dark-orange)",
     },
-    { 
+    {
         id: "dot3", 
         audioSrc: "./audio/saw_scale.wav", 
         leftOffsetPx: leftOffset, yFraction: 3 / numDots, 
         backgroundColor: "var(--yellow)", 
         highlightedColor: "var(--dark-yellow)",
-    }
+    },
 ];
