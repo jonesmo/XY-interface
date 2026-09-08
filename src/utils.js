@@ -1,3 +1,5 @@
+let currentlyPlayingDot = null;
+
 export function resizeCanvas() {
   const workspace = document.querySelector('.workspace');
   const canvas = document.getElementById('xy-plane');
@@ -17,11 +19,13 @@ function initAudioContext (audioElement) {
     return { track, audioContext };
 }
 
+// dots
 export function createDot(container, dotData) {
   const button = document.createElement("button");
   button.className = "one-dot";
   button.dataset.id = dotData.id;
   button.dataset.playing = "false";
+  button.dataset.locked = "false";
   button.setAttribute("role", "switch");
   button.setAttribute("aria-checked", "false");
   button.style.setProperty("--dot-color", dotData.backgroundColor);
@@ -34,6 +38,9 @@ export function createDot(container, dotData) {
   audio.addEventListener("ended", () => {
     button.dataset.playing = "false";
     button.setAttribute("aria-checked", "false");
+    if (currentlyPlayingDot === dotData) {
+      currentlyPlayingDot = null;
+  }
   });
 
   container.appendChild(audio);
@@ -50,24 +57,66 @@ export function createDot(container, dotData) {
 }
 
 export function positionDot(container, dotData) {
-  const rect = container.getBoundingClientRect();
-  dotData.element.style.left = `${dotData.x * rect.width}px`;
-  dotData.element.style.top = `${dotData.y * rect.height}px`;
+  const canvas = document.getElementById("xy-plane");
+  const containerRect = container.getBoundingClientRect();
+  const canvasRect = canvas.getBoundingClientRect();
+
+  let pixelX, pixelY;
+
+  if (dotData.hasEnteredCanvas) {
+    // Canvas-relative: x/y are fractions of the canvas itself
+    const canvasOffsetX = canvasRect.left - containerRect.left;
+    const canvasOffsetY = canvasRect.top - containerRect.top;
+    pixelX = canvasOffsetX + dotData.x * canvasRect.width;
+    pixelY = canvasOffsetY + dotData.y * canvasRect.height;
+  } else {
+    // Container-relative: x/y are fractions of the whole workspace
+    pixelX = dotData.x * containerRect.width;
+    pixelY = dotData.y * containerRect.height;
+  }
+
+  dotData.element.style.left = `${pixelX}px`;
+  dotData.element.style.top = `${pixelY}px`;
 }
 
 function makeDraggable(container, dotData) {
   const el = dotData.element;
+  const canvas = document.getElementById("xy-plane");
+
+  if (dotData.hasEnteredCanvas === undefined) {
+    dotData.hasEnteredCanvas = false;
+  }
 
   el.addEventListener("pointerdown", (e) => {
+    if (dotData.locked) return; // lock dots after Finish pressed
+
     el.setPointerCapture(e.pointerId); // keeps events targeting this element
     el.classList.add("dragging");
 
     const onMove = (e) => {
-      const rect = container.getBoundingClientRect();
+      const containerRect = container.getBoundingClientRect();
+      const canvasRect = canvas.getBoundingClientRect();
 
-      // Convert pointer position to a 0–1 fraction, clamped inside bounds
-      let fracX = (e.clientX - rect.left) / rect.width;
-      let fracY = (e.clientY - rect.top) / rect.height;
+      // Has the pointer entered the canvas area on this move?
+      const insideCanvasNow =
+        e.clientX >= canvasRect.left &&
+        e.clientX <= canvasRect.right &&
+        e.clientY >= canvasRect.top &&
+        e.clientY <= canvasRect.bottom;
+
+      if (insideCanvasNow) {
+        dotData.hasEnteredCanvas = true;
+      }
+
+      // Pick which rect to clamp against
+      const bounds = dotData.hasEnteredCanvas ? canvasRect : containerRect;
+
+      const clampedX = Math.min(bounds.right, Math.max(bounds.left, e.clientX));
+      const clampedY = Math.min(bounds.bottom, Math.max(bounds.top, e.clientY));
+
+      let fracX = (clampedX - bounds.left) / bounds.width;
+      let fracY = (clampedY - bounds.top) / bounds.height;
+
       fracX = Math.min(1, Math.max(0, fracX));
       fracY = Math.min(1, Math.max(0, fracY));
 
@@ -101,18 +150,38 @@ export function togglePlay(dotData) {
 
   const btn = dotData.element;
   const audio = dotData.audioElement;
+  const wasPlaying = btn.dataset.playing === "true";
 
-  if (btn.dataset.playing === "false") {
-    audio.play();
-    btn.dataset.playing = "true";
-  } else {
-    audio.pause();
-    audio.currentTime = 0;
-    btn.dataset.playing = "false";
+  if (currentlyPlayingDot && currentlyPlayingDot !== dotData) {
+    stopDot(currentlyPlayingDot);
   }
 
-  const state = btn.getAttribute("aria-checked") === "true";
-  btn.setAttribute("aria-checked", state ? "false" : "true");
+  if (wasPlaying) {
+    // Clicking the dot that's already playing stops it
+    stopDot(dotData);
+    currentlyPlayingDot = null;
+  } else {
+    audio.play();
+    btn.dataset.playing = "true";
+    btn.setAttribute("aria-checked", "true");
+    currentlyPlayingDot = dotData;
+  }
+}
+
+function stopDot(dotData) {
+  const btn = dotData.element;
+  const audio = dotData.audioElement;
+  audio.pause();
+  audio.currentTime = 0;
+  btn.dataset.playing = "false";
+  btn.setAttribute("aria-checked", "false");
+}
+
+export function lockDots(dots) {
+  dots.forEach((dotData) => {
+    dotData.locked = true;
+    dotData.element.classList.add("locked");
+  });
 }
 
 export function attachClickHandler(dotData) {
@@ -136,4 +205,25 @@ export function attachClickHandler(dotData) {
       togglePlay(dotData);
     }
   });
+}
+
+// log data to server
+export async function logData(runId, dotData, endpoint) {
+  const payload = {
+    runId,
+    timestamp: new Date().toISOString(),
+    dotData
+  };
+
+  const response = await fetch(endpoint, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  });
+
+  if (!response.ok) {
+    throw new Error(`Server responded with status ${response.status}`);
+  }
+
+  return response.json();
 }
