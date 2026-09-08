@@ -1,3 +1,5 @@
+let currentlyPlayingDot = null;
+
 export function resizeCanvas() {
   const workspace = document.querySelector('.workspace');
   const canvas = document.getElementById('xy-plane');
@@ -35,6 +37,9 @@ export function createDot(container, dotData) {
   audio.addEventListener("ended", () => {
     button.dataset.playing = "false";
     button.setAttribute("aria-checked", "false");
+    if (currentlyPlayingDot === dotData) {
+      currentlyPlayingDot = null;
+  }
   });
 
   container.appendChild(audio);
@@ -58,19 +63,39 @@ export function positionDot(container, dotData) {
 
 function makeDraggable(container, dotData) {
   const el = dotData.element;
+  const canvas = document.getElementById("xy-plane");
+
+  if (dotData.hasEnteredCanvas === undefined) {
+    dotData.hasEnteredCanvas = false;
+  }
 
   el.addEventListener("pointerdown", (e) => {
     el.setPointerCapture(e.pointerId); // keeps events targeting this element
     el.classList.add("dragging");
 
     const onMove = (e) => {
-      const rect = container.getBoundingClientRect();
+      const containerRect = container.getBoundingClientRect();
+      const canvasRect = canvas.getBoundingClientRect();
 
-      // Convert pointer position to a 0–1 fraction, clamped inside bounds
-      let fracX = (e.clientX - rect.left) / rect.width;
-      let fracY = (e.clientY - rect.top) / rect.height;
-      fracX = Math.min(1, Math.max(0, fracX));
-      fracY = Math.min(1, Math.max(0, fracY));
+      // Has the pointer entered the canvas area on this move?
+      const insideCanvasNow =
+        e.clientX >= canvasRect.left &&
+        e.clientX <= canvasRect.right &&
+        e.clientY >= canvasRect.top &&
+        e.clientY <= canvasRect.bottom;
+
+      if (insideCanvasNow) {
+        dotData.hasEnteredCanvas = true;
+      }
+
+      // Pick which rect to clamp against
+      const bounds = dotData.hasEnteredCanvas ? canvasRect : containerRect;
+
+      const clampedX = Math.min(bounds.right, Math.max(bounds.left, e.clientX));
+      const clampedY = Math.min(bounds.bottom, Math.max(bounds.top, e.clientY));
+
+      let fracX = (clampedX - containerRect.left) / containerRect.width;
+      let fracY = (clampedY - containerRect.top) / containerRect.height;
 
       dotData.x = fracX;
       dotData.y = fracY;
@@ -102,18 +127,31 @@ export function togglePlay(dotData) {
 
   const btn = dotData.element;
   const audio = dotData.audioElement;
+  const wasPlaying = btn.dataset.playing === "true";
 
-  if (btn.dataset.playing === "false") {
-    audio.play();
-    btn.dataset.playing = "true";
-  } else {
-    audio.pause();
-    audio.currentTime = 0;
-    btn.dataset.playing = "false";
+  if (currentlyPlayingDot && currentlyPlayingDot !== dotData) {
+    stopDot(currentlyPlayingDot);
   }
 
-  const state = btn.getAttribute("aria-checked") === "true";
-  btn.setAttribute("aria-checked", state ? "false" : "true");
+  if (wasPlaying) {
+    // Clicking the dot that's already playing stops it
+    stopDot(dotData);
+    currentlyPlayingDot = null;
+  } else {
+    audio.play();
+    btn.dataset.playing = "true";
+    btn.setAttribute("aria-checked", "true");
+    currentlyPlayingDot = dotData;
+  }
+}
+
+function stopDot(dotData) {
+  const btn = dotData.element;
+  const audio = dotData.audioElement;
+  audio.pause();
+  audio.currentTime = 0;
+  btn.dataset.playing = "false";
+  btn.setAttribute("aria-checked", "false");
 }
 
 export function attachClickHandler(dotData) {

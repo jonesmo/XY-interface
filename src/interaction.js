@@ -31,7 +31,7 @@ const ro = new ResizeObserver(() => {
 ro.observe(container);
 
 // when Finish is clicked, log out data
-document.getElementById('finish').addEventListener('click', async () => {
+document.getElementById('finish').addEventListener('click', async (e) => {
   e.target.disabled = true; // in case of double clicks
 
   const dotData = dots.map(def => ({
