@@ -1,10 +1,10 @@
-import { resizeCanvas, createDot, positionDot, logData } from "./utils.js";
+import { resizeCanvas, createDot, positionDot, logData, lockDots } from "./utils.js";
 import { dotDefs } from "./data.js";
 
 console.clear();
 
 const runId = crypto.randomUUID();
-const endpoint = "https://dummy.url";
+const endpoint = "http://localhost:3000/api/save-positions";
 
 // position dots initially
 const container = document.querySelector(".workspace");
@@ -32,6 +32,14 @@ ro.observe(container);
 
 // when Finish is clicked, log out data
 document.getElementById('finish').addEventListener('click', async (e) => {
+  const allDotsPlaced = dots.every((dotData) => dotData.hasEnteredCanvas);
+
+  if (!allDotsPlaced) {
+    document.getElementById('status').textContent =
+      'Please drag all dots into the canvas before finishing.';
+    return;
+  }
+
   e.target.disabled = true; // in case of double clicks
 
   const dotData = dots.map(def => ({
@@ -47,6 +55,7 @@ document.getElementById('finish').addEventListener('click', async (e) => {
     const result = await logData(runId, dotData, endpoint);
     console.log('Saved successfully:', result);
     document.getElementById('status').textContent = 'Your data has been recorded. Thank you!';
+    lockDots(dots);
   } catch (err) {
     console.error('Error saving data:', err);
     document.getElementById('status').textContent = 'There was an error saving your data. Please try again.';

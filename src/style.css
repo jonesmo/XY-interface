@@ -109,6 +109,11 @@ p {
   cursor: grabbing;
 }
 
+.one-dot.locked {
+  cursor: default;
+  opacity: 0.8;
+}
+
 .workspace {
   display: flex;
   flex: 1 1 0%;
@@ -125,4 +130,11 @@ p {
   width: 75%;
   max-width: 100%;
   max-height: 100%;
+}
+
+#status {
+  color: var(--black);
+  font-family: "Avenir";
+  font-size: 18px;
+  text-align: center;
 }

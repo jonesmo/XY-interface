@@ -37,7 +37,7 @@ const entries = files.map((file, i) => {
   return `    { 
         id: "dot${i + 1}", 
         audioSrc: "./audio/${file}", 
-        leftOffsetPx: leftOffset, yFraction: ${i + 1} / numDots, 
+        leftOffsetPx: leftOffset, yFraction: ${i + 1} / MAX_DOTS, 
         backgroundColor: "${color.backgroundColor}", 
         highlightedColor: "${color.highlightedColor}",
     }`;
@@ -45,6 +45,7 @@ const entries = files.map((file, i) => {
 
 const output = `const leftOffset = ${leftOffset};
 const numDots = ${numDots};
+const MAX_DOTS = ${MAX_DOTS};
 
 export const dotDefs = [
 ${entries.join(",\n")}

@@ -25,6 +25,7 @@ export function createDot(container, dotData) {
   button.className = "one-dot";
   button.dataset.id = dotData.id;
   button.dataset.playing = "false";
+  button.dataset.locked = "false";
   button.setAttribute("role", "switch");
   button.setAttribute("aria-checked", "false");
   button.style.setProperty("--dot-color", dotData.backgroundColor);
@@ -56,9 +57,26 @@ export function createDot(container, dotData) {
 }
 
 export function positionDot(container, dotData) {
-  const rect = container.getBoundingClientRect();
-  dotData.element.style.left = `${dotData.x * rect.width}px`;
-  dotData.element.style.top = `${dotData.y * rect.height}px`;
+  const canvas = document.getElementById("xy-plane");
+  const containerRect = container.getBoundingClientRect();
+  const canvasRect = canvas.getBoundingClientRect();
+
+  let pixelX, pixelY;
+
+  if (dotData.hasEnteredCanvas) {
+    // Canvas-relative: x/y are fractions of the canvas itself
+    const canvasOffsetX = canvasRect.left - containerRect.left;
+    const canvasOffsetY = canvasRect.top - containerRect.top;
+    pixelX = canvasOffsetX + dotData.x * canvasRect.width;
+    pixelY = canvasOffsetY + dotData.y * canvasRect.height;
+  } else {
+    // Container-relative: x/y are fractions of the whole workspace
+    pixelX = dotData.x * containerRect.width;
+    pixelY = dotData.y * containerRect.height;
+  }
+
+  dotData.element.style.left = `${pixelX}px`;
+  dotData.element.style.top = `${pixelY}px`;
 }
 
 function makeDraggable(container, dotData) {
@@ -70,6 +88,8 @@ function makeDraggable(container, dotData) {
   }
 
   el.addEventListener("pointerdown", (e) => {
+    if (dotData.locked) return; // lock dots after Finish pressed
+
     el.setPointerCapture(e.pointerId); // keeps events targeting this element
     el.classList.add("dragging");
 
@@ -94,8 +114,11 @@ function makeDraggable(container, dotData) {
       const clampedX = Math.min(bounds.right, Math.max(bounds.left, e.clientX));
       const clampedY = Math.min(bounds.bottom, Math.max(bounds.top, e.clientY));
 
-      let fracX = (clampedX - containerRect.left) / containerRect.width;
-      let fracY = (clampedY - containerRect.top) / containerRect.height;
+      let fracX = (clampedX - bounds.left) / bounds.width;
+      let fracY = (clampedY - bounds.top) / bounds.height;
+
+      fracX = Math.min(1, Math.max(0, fracX));
+      fracY = Math.min(1, Math.max(0, fracY));
 
       dotData.x = fracX;
       dotData.y = fracY;
@@ -152,6 +175,13 @@ function stopDot(dotData) {
   audio.currentTime = 0;
   btn.dataset.playing = "false";
   btn.setAttribute("aria-checked", "false");
+}
+
+export function lockDots(dots) {
+  dots.forEach((dotData) => {
+    dotData.locked = true;
+    dotData.element.classList.add("locked");
+  });
 }
 
 export function attachClickHandler(dotData) {
