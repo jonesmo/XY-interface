@@ -1,3 +1,5 @@
 .vscode/
 .DS_Store
 src/audio/*
+node_modules/
+results_db/*
